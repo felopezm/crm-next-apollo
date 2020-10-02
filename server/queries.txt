@@ -1,0 +1,149 @@
+<---------- new user ----------->
+
+mutation newUser($input: UserInput){
+  newUser(input: $input){
+    id
+    full_name
+    email
+  }
+}
+
+{
+  "input":{
+    "full_name": "fede",
+    "email": "fede@fede.com",
+    "password": "123456"
+  }
+}
+
+<---------- auth user ----------->
+
+mutation authUser($input: AuthInput){
+  authUser(input:$input){
+    token
+  }
+}
+
+{
+  "input": {
+    "email": "fede@fede.com",
+    "password": "123456"
+  }
+}
+
+<---------- get user ----------->
+
+query getUser($token: String!){
+  getUser(token: $token){
+    id
+    email
+  }
+}
+
+{
+  "token": "token..."
+}
+
+<----------  product ----------->
+
+ mutation newProduct($input: ProductInput){
+  newProduct(input: $input){
+    id
+    name
+    stock
+    price
+    date_creation
+  }
+}
+
+{
+  "input":{
+    "name":"Macbook pro 16 ram 14 pulgadas",
+    "stock":15,
+    "price":2500
+  }
+}
+
+
+query getProducts{
+  getProducts{
+    id
+    name
+  } 
+}
+
+query getProduct($id: ID!){
+  getProduct(id: $id){
+    id
+    name
+  }
+}
+
+{
+  "id":"5f6fdf229adacf1d1c19b66c"
+}
+
+
+mutation updateProduct($id: ID!,$input: ProductInput){
+  updateProduct(id:$id, input:$input){
+    id
+    name
+    stock
+  }
+}
+
+{
+  "id":"5f6fdf229adacf1d1c19b66c",
+  "input": {
+    "name":"PC Gamer Acer 15 pulgadas",
+    "stock": 10,
+    "price": 1200
+  }
+}
+
+
+mutation deleteProduct($id:ID!){
+  deleteProduct(id:$id)
+}
+
+{
+  "id":"5f6fdf229adacf1d1c19b66c"
+}
+
+
+
+<----------  client ----------->
+
+ mutation newClient($input: ClientInput){
+  newClient(input: $input){
+    id
+		full_name
+  }
+}
+
+{
+  "input":{
+    "full_name":"Didir Seguridad",
+    "company":"Seguridad",
+    "email":"didir@seguridad.com",
+    "telephone":"12345"
+  }
+}
+
+{
+  "authorization":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmNmZmZjgxMmY2NmIzMjIxYzNmNzAwMSIsImlhdCI6MTYwMTE3NTQ1NCwiZXhwIjoxNjAxMjYxODU0fQ.H5b2U5Dl9Ho4yFiY4uVADxjSrwP5DwpBuLli1PnJDGc"
+}
+
+
+query getClientsVendor($id: ID!){
+  getClient(id:$id){
+	id
+    full_name
+  }
+}
+{
+  "id": "5f6ffffa2f66b3221c3f7002"
+}
+{
+  "authorization":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmNmZmZjgxMmY2NmIzMjIxYzNmNzAwMSIsImlhdCI6MTYwMTE3NTQ1NCwiZXhwIjoxNjAxMjYxODU0fQ.H5b2U5Dl9Ho4yFiY4uVADxjSrwP5DwpBuLli1PnJDGc"
+}
