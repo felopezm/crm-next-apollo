@@ -1,11 +1,31 @@
-import Head from 'next/head'
+import React, { useState } from 'react'
+import { useRouter } from 'next/router';
 import Layout from '../components/Layout';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useMutation, gql } from '@apollo/client';
+
+const NEW_USER = gql`
+  mutation newUser($input: UserInput){
+    newUser(input: $input){
+      id
+      full_name
+      email
+    }
+  }
+`;
 
 export default function Register() {
-  // validate form
+  // state message
+  const [message, saveMessage] = useState(null);
 
+  // mutation 
+  const [ newUser] = useMutation(NEW_USER);
+
+  //routing
+  const router = useRouter();
+
+  // validate form
   const formik = useFormik({
     initialValues:{
       full_name:'',
@@ -17,12 +37,44 @@ export default function Register() {
       email: Yup.string().email('email not valid..').required('Email required..'),
       password: Yup.string().required('Password required..').min(6,'Password min 6 characters..')
     }),
-    onSubmit:val=>{
-      console.log('enviando..', val);
+    onSubmit: async values => {
+
+      const { full_name, email, password } = values;
+      try {
+       const { data } = await newUser({
+          variables:{
+            input:{
+              full_name, email, password
+            }
+          }
+        });
+        saveMessage(`Success, User ${data.newUser.full_name} Created `);
+        setTimeout(() => {
+          saveMessage(null);
+          router.push('/login');
+        }, 3000);
+
+      } catch (error) {
+        saveMessage(error.message.replace('GraphQL error:', ''));
+        setTimeout(() => {
+          saveMessage(null);
+        }, 3500);
+      }
     }
   });
+
+  const viewMessage = () =>{
+    return(
+      <div className="bg-white py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">
+        <p>{message}</p>
+      </div>
+    )
+  }
+
   return (
     <Layout>
+        { message && viewMessage()}
+
         <h1 className="text-center text-2xl text-white font-light">Register</h1>
 
         <div  className="flex justify-center mt-5">
