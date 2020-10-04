@@ -9,18 +9,17 @@ require('dotenv').config({ path: 'variables.env'});
 
 
 const createToken = (user,secret,expiresIn) =>{
-    const {id} = user;
+    const {id, email, full_name} = user;
 
-    return jwt.sign({id}, secret, {expiresIn})
+    return jwt.sign({id, email, full_name}, secret, {expiresIn})
 
 }
 
 const resolvers = {
     Query:{
-        getUser: async (_,{ token }) => {
-            const userId = await jwt.verify(token, process.env.SECRET);
+        getUser: async (_,{ }, ctx) => {
 
-            return userId;
+            return ctx.user;
         },
         getProducts: async () => {
             try {
@@ -44,7 +43,7 @@ const resolvers = {
         },
         getClients: async () => {
             try {
-                const clients = Client.find({});
+                const clients = await Client.find({});
 
                 return clients;
             } catch (error) {
@@ -52,13 +51,13 @@ const resolvers = {
             }
         },
         getClientsVendor: async (_,{}, ctx) => {
-            const userId = ctx.user.id.toString();
+           
             try {
-                const clients = Client.find({vendor:userId});
+                const clients = await Client.find({vendor:ctx.user.id.toString()});
 
                 return clients;
             } catch (error) {
-                console.log('Error >>>', error);
+                console.log(error);
             }
         },
         getClient: async (_,{id},ctx) => {
@@ -76,7 +75,7 @@ const resolvers = {
         },
         getOrders: async () =>{
             try {
-                const orders = Order.find({});
+                const orders = await Order.find({});
 
                 return orders;
             } catch (error) {
@@ -86,7 +85,7 @@ const resolvers = {
         getOrdersVendor: async (_,{},ctx) =>{
             const userId = ctx.user.id.toString();
             try {
-                const orders = Order.find({vendor:userId});
+                const orders = await Order.find({vendor:userId});
 
                 return orders;
             } catch (error) {
@@ -109,7 +108,7 @@ const resolvers = {
         getOrderStatus: async (_,{status},ctx) =>{
             const userId = ctx.user.id.toString();
             try {
-                const orders = Order.find({vendor:userId, status});
+                const orders = await Order.find({vendor:userId, status});
 
                 return orders;
             } catch (error) {

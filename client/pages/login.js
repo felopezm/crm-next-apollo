@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import Layout from '../components/Layout';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useMutation, gql } from '@apollo/client';
-import { route } from 'next/dist/next-server/server/router';
+
+import Layout from '../components/Layout';
 
 
 const AUTH_USER = gql`
@@ -20,7 +20,7 @@ export default function Login() {
    const [message, saveMessage] = useState(null);
 
    // mutation 
-   const [ authUser] = useMutation(AUTH_USER);
+   const [authUser] = useMutation(AUTH_USER);
    
    //routing
    const router = useRouter();
