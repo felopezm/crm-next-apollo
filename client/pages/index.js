@@ -2,6 +2,7 @@ import { useQuery, gql } from '@apollo/client';
 import Link from 'next/link';
 
 import Layout from '../components/Layout';
+import Client from '../components/Client';
 
 
 const GET_CLIENTS_VENDOR = gql`
@@ -43,16 +44,17 @@ const Index = () => {
                   <th className="w-1/5 py-2">Name</th>
                   <th className="w-1/5 py-2">Company</th>
                   <th className="w-1/5 py-2">email</th>
+                  <th className="w-1/5 py-2">Edit</th>
+                  <th className="w-1/5 py-2">Remove</th>                 
               </tr>
             </thead>
 
             <tbody className="bg-white">
               {data.getClientsVendor.map( client => (
-                <tr key={client.id}>
-                  <td className="border px-4 py-2">{client.full_name}</td>
-                  <td className="border px-4 py-2">{client.company}</td>
-                  <td className="border px-4 py-2">{client.email}</td>
-                </tr>
+                <Client 
+                  key={client.id}
+                  client={client}
+                />
               ))}
             </tbody>
          </table>

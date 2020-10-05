@@ -15,12 +15,36 @@ const NEW_CLIENT = gql`
     }
 `;
 
+const GET_CLIENTS_VENDOR = gql`
+  query getClientsVendor{
+    getClientsVendor{
+      id
+      full_name
+      company
+      email
+    }
+  }
+`;
+
 const NewClient = () => {
     // state message
     const [message, saveMessage] = useState(null);
 
-    // mutation 
-    const [ newClient] = useMutation(NEW_CLIENT);
+    // mutation and update cache apollo
+    const [ newClient] = useMutation(NEW_CLIENT,{
+        update(cache,{ data: { newClient}}){
+            // get object cache to update
+            const { getClientsVendor } = cache.readQuery({ query: GET_CLIENTS_VENDOR });
+
+            // rewriting cache
+            cache.writeQuery({
+                query: GET_CLIENTS_VENDOR,
+                data:{
+                    getClientsVendor: [...getClientsVendor, newClient]
+                }
+            })
+        }    
+    });
    
     //routing
     const router = useRouter();
@@ -37,7 +61,7 @@ const NewClient = () => {
             full_name: Yup.string().required('Full Name required..'),
             email: Yup.string().email('email not valid..').required('Email required..'),
             company: Yup.string().required('Company required..'),
-            telephone: Yup.string().required('Company required..')
+            telephone: Yup.string().required('Telephone required..')
         }),
         onSubmit: async values => {
 
@@ -81,7 +105,7 @@ const NewClient = () => {
         <Layout>
             { message && viewMessage()}
 
-            <h1 className="text-2xl text-gray-800 font-light">new client</h1>
+            <h1 className="text-2xl text-gray-800 font-light">New client</h1>
 
             <div className="flex justify-center mt-5">
                 <div className="w-full max-w-lg">
@@ -97,9 +121,9 @@ const NewClient = () => {
                         ) : null }
 
                         <div className="mt-4">
-                            <labe className="block text-gray-700 text-sm font-bold md-2" htmlFor="full_name">
+                            <label className="block text-gray-700 text-sm font-bold md-2" htmlFor="full_name">
                             Full Name
-                            </labe>
+                            </label>
                             <input 
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 id="full_name"
@@ -119,9 +143,9 @@ const NewClient = () => {
                         ) : null }
 
                         <div className="mt-4">
-                            <labe className="block text-gray-700 text-sm font-bold md-2" htmlFor="email">
+                            <label className="block text-gray-700 text-sm font-bold md-2" htmlFor="email">
                             Email
-                            </labe>
+                            </label>
                             <input 
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 id="email"
@@ -141,9 +165,9 @@ const NewClient = () => {
                         ) : null }
 
                         <div className="mt-4">
-                            <labe className="block text-gray-700 text-sm font-bold md-2" htmlFor="company">
+                            <label className="block text-gray-700 text-sm font-bold md-2" htmlFor="company">
                             Company
-                            </labe>
+                            </label>
                             <input 
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 id="company"
@@ -163,9 +187,9 @@ const NewClient = () => {
                         ) : null }
 
                         <div className="mt-4">
-                            <labe className="block text-gray-700 text-sm font-bold md-2" htmlFor="telephone">
+                            <label className="block text-gray-700 text-sm font-bold md-2" htmlFor="telephone">
                             Telephone
-                            </labe>
+                            </label>
                             <input 
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 id="telephone"
